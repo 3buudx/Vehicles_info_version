@@ -141,3 +141,4 @@ fuel_types_hist = px.histogram(filtered_data, x="price", color="fuel", nbins=30,
 
 # Display Plot
 st.plotly_chart(fuel_types_hist)
+#test
