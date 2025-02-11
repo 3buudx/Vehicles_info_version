@@ -54,54 +54,6 @@ filtered_data = vehicles_info[(vehicles_info['model_year'] >= start_year) & (veh
 high_low_per_year = filtered_data.groupby(['model_year', 'h_l_mileage'])['model'].count().reset_index()
 st.header('Car advertisment Dataset')
 st.write(vehicles_info)
-#models_per_year_scatter = px.scatter(models_per_year,
- #                                    x='model_year',
-  #                                   y='model',
-   #                                  title='Total cars from the same model',
-    #                                 labels= dict(model = 'Car Model', model_year = 'Total cars'),
-     #                                color='model',
-      #                               color_discrete_sequence= px.colors.qualitative.Light24)
-#Updating the size for fonts 
-#models_per_year_scatter.update_layout(
- #   yaxis=dict(
-  #      tickfont=dict(size=10),  # Adjust font size for better readability
-   #     automargin=True,         # Prevent label cut-off
-    #    title_standoff=15,       # Space between title and labels
-     #   fixedrange=False         # Allow scrolling
-    #),
-    #xaxis=dict(
-     #   tickfont=dict(size=14),
-      #  range=[1990, 2025]  # Adjust based on your dataset
-  #  )#,
-   # hovermode="closest"
-#)
-# Enable scrolling by setting a fixed height
-#models_per_year_scatter.update_layout(height=600)
-#updating the range axis for X
-#models_per_year_scatter.update_xaxes(range=[25, 3000])
-#showing plot
-#models_per_year_scatter.show(config={'responsive': False})
-#st.plotly_chart(models_per_year_scatter, use_container_width=True)
-
-
-#total of cars from the same manufacturer
-cars_per_manufacturer = (
-    vehicles_info.groupby(['manufacturer'])['model']
-    .count()
-    .reset_index()
-    .rename(columns={'model': 'count'})
-)
-# Create bar plot
-cars_per_manufacturer_bar = px.bar(
-    cars_per_manufacturer,
-    x="manufacturer", 
-    y="count",
-    title="Number of Cars Per Manufacturer",
-    labels={"manufacturer": "Car Manufacturer", "count": "Number of Cars"},
-    color="manufacturer",  # Different color for each manufacturer
-    color_discrete_sequence=px.colors.qualitative.Set3  # Set color scheme
-)
-st.plotly_chart(cars_per_manufacturer_bar)
 
 #hist for model year vs odometer 
 st.title("Vehicle Mileage Distribution: Model Year vs. Odometer")
@@ -142,3 +94,50 @@ fig = px.histogram(filtered_data, x="price", nbins=50, color_discrete_sequence=[
 
 # Display Plot
 st.plotly_chart(fig)
+
+st.title("🚘 Car Listings Count by Manufacturer")
+st.subheader("See which car brands have the most listings in the dataset")
+
+# Select Color
+color_choice = st.color_picker('SELECT BAR COLOR', '#3498db')
+
+# Count listings per manufacturer
+manufacturer_counts = vehicles_info['manufacturer'].value_counts().reset_index()
+manufacturer_counts.columns = ['manufacturer', 'count']
+
+# Create Bar Chart
+manufacturer_counts_bar = px.bar(manufacturer_counts, x='manufacturer', y='count', color_discrete_sequence=[color_choice],
+             title="Number of Listings by Car Manufacturer",
+             labels={'manufacturer': 'Car Manufacturer', 'count': 'Number of Listings'})
+
+# Display Plot
+st.plotly_chart(manufacturer_counts_bar)
+
+
+st.title("🔋 Car Price Distribution by Fuel Type")
+st.subheader("Explore how car prices vary by fuel type")
+
+# Checkbox to show all fuel types or filter by one
+show_fuel_type_filter = st.checkbox("Filter by Fuel Type")
+
+# Select Fuel Type if checkbox is selected
+fuel_types = vehicles_info['fuel'].unique()
+fuel_type_selected = st.selectbox("Select Fuel Type", options=fuel_types) if show_fuel_type_filter else None
+
+# Select Color for the plot
+color_choice = st.color_picker('SELECT PLOT COLOR', '#3498db')
+
+# Filter data based on fuel type if checkbox is checked
+if show_fuel_type_filter:
+    filtered_data = vehicles_info[vehicles_info['fuel'] == fuel_type_selected]
+    title = f"Price Distribution for {fuel_type_selected} Cars"
+else:
+    filtered_data = vehicles_info
+    title = "Price Distribution for All Fuel Types"
+
+# Create Histogram for Price Distribution
+fuel_types_hist = px.histogram(filtered_data, x="price", color="fuel", nbins=30, color_discrete_sequence=[color_choice],
+                   title=title, labels={"price": "Price ($)", "fuel": "Fuel Type"})
+
+# Display Plot
+st.plotly_chart(fuel_types_hist)
