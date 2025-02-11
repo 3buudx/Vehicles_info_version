@@ -95,7 +95,7 @@ fig = px.histogram(filtered_data, x="price", nbins=50, color_discrete_sequence=[
 # Display Plot
 st.plotly_chart(fig)
 
-st.title("🚘 Car Listings Count by Manufacturer")
+st.title("Car Listings Count by Manufacturer")
 st.subheader("See which car brands have the most listings in the dataset")
 
 # Select Color
@@ -114,7 +114,7 @@ manufacturer_counts_bar = px.bar(manufacturer_counts, x='manufacturer', y='count
 st.plotly_chart(manufacturer_counts_bar)
 
 
-st.title("🔋 Car Price Distribution by Fuel Type")
+st.title("Car Price Distribution by Fuel Type")
 st.subheader("Explore how car prices vary by fuel type")
 
 # Checkbox to show all fuel types or filter by one
@@ -141,4 +141,3 @@ fuel_types_hist = px.histogram(filtered_data, x="price", color="fuel", nbins=30,
 
 # Display Plot
 st.plotly_chart(fuel_types_hist)
-#test
