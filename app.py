@@ -2,6 +2,11 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st 
 vehicles_info = pd.read_csv('vehicles_us.csv')
+
+vehicles_info['price'] = pd.to_numeric(vehicles_info['price'], errors='coerce')
+
+# Fill any NaN values in 'price' column with 0 (or use another placeholder)
+vehicles_info['price'] = vehicles_info['price'].fillna(0)
 #Checking for missing and fill it 
 print(vehicles_info.isna().sum())
 #Filling all the missing in vehicle_info DataFrame with 'No info!' in 'paint_color'.
