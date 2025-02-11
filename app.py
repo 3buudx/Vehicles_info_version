@@ -3,6 +3,12 @@ import plotly.express as px
 import streamlit as st 
 vehicles_info = pd.read_csv('vehicles_us.csv')
 
+for model in vehicles_info['model'].unique():
+    # find the median for each of these models
+    median_value = vehicles_info[vehicles_info['model'] == model]['cylinders'].median()
+    
+    # find the rows with these models and use a simple fillna
+    vehicles_info.loc[vehicles_info['model']==model, 'cylinders'] = vehicles_info.loc[vehicles_info['model']==model, 'cylinders'].fillna(median_value)    
 vehicles_info['price'] = pd.to_numeric(vehicles_info['price'], errors='coerce')
 
 # Fill any NaN values in 'price' column with 0 (or use another placeholder)
@@ -96,7 +102,10 @@ filtered_data = vehicles_info[vehicles_info['model_year'] == year_selected]
 fig = px.histogram(filtered_data, x="price", nbins=50, color_discrete_sequence=[color_choice],
                    title=f"Price Distribution for {year_selected} Model Year",
                    labels={"price": "Price ($)"})
-
+fig.update_layout(
+    xaxis_title_text='Price ($)',
+    yaxis_title_text='Number of cars'
+)
 # Display Plot
 st.plotly_chart(fig)
 
@@ -141,7 +150,7 @@ else:
     title = "Price Distribution for All Fuel Types"
 
 # Create Histogram for Price Distribution
-fuel_types_hist = px.histogram(filtered_data, x="price", color="fuel", nbins=30, color_discrete_sequence=[color_choice],
+fuel_types_hist = px.histogram(filtered_data, x="price", y='fuel', color="fuel", nbins=30, color_discrete_sequence=[color_choice],
                    title=title, labels={"price": "Price ($)", "fuel": "Fuel Type"})
 
 # Display Plot
